@@ -46,11 +46,12 @@ function serchLogin(userName, success) {
 }
 
 // 查询广告信息
-function serchAd(success) {
+function serchAd(offset, limit, success) {
     var connection = dbutil.createConnection();
-    var serchSql = "select * from advertise;"
+    var serchSql = "select * from advertise order by ctime desc limit ?, ?;"
+    var params = [offset, limit];
     connection.connect();
-    connection.query(serchSql, function (err, res) {
+    connection.query(serchSql, params, function (err, res) {
         if(err == null) {
             success(res)
         } else {
@@ -81,7 +82,7 @@ function updateViews(views, title, success) {
 // 根据用户名查询发布的广告信息
 function serchMyRelease(userName, offset, limit, success) {
     var connection = dbutil.createConnection();
-    var serchSql = "select * from advertise where user_name = ? limit ?, ?;";
+    var serchSql = "select * from advertise where user_name = ? order by ctime desc limit ?, ?;";
     var params = [userName, offset, limit]
     connection.connect();
     connection.query(serchSql, params, function (err, res) {

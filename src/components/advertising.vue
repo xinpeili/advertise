@@ -3,7 +3,7 @@
         <!-- 3d轮播插件 -->
         <carousel3d></carousel3d>
 
-        <div class="ad-box">
+        <div ref="element" class="ad-box">
             <router-link v-for="(item,index) in adMsgArr" :key="index" class="ad-list" tag="div" :to="{name: 'AdMsg', params: {id: '2019' + item.ad_id}}">
                 <div class="box" @click="setStore(index)">
                     <!-- 350px * 220px -->
@@ -39,21 +39,51 @@ import axios from 'axios'
 export default {
     data() {
         return {
-            adMsgArr: []
+            adMsgArr: [],
+            flag: true
         }
     },
     created() {
-        axios.get('/api/serAd').then(res => {
+        axios.get('/api/serAd?offset=0&limit=9').then(res => {
             this.adMsgArr = res.data;
             console.log(this.adMsgArr)
         })
+    },
+    mounted() {
+        window.addEventListener('scroll', this.handleScroll)
     },
     methods: {
         setStore(index) {
             this.$store.commit('setVal',this.adMsgArr[index]);
             // 让数据库中浏览量加一
             axios.get('/api/addViews?viewsNum='+this.adMsgArr[index].views+'&adId='+this.adMsgArr[index].ad_id);
+        },
+        // 滚动时触发
+        handleScroll() {
+            if(this.$refs.element) {
+                var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop;
+                var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+                var adBoxHeight = this.$refs.element.offsetHeight;
+                if(scrollHeight + clientHeight >= adBoxHeight + 460 && this.flag) {
+                    this.flag = false;
+                    this.onSearch();
+                    // 发送ajax
+                    console.log(111)
+                }
+            }
             
+        },
+        // loading动画
+        onSearch() {
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            setTimeout(() => {
+                loading.close();
+            }, 2000);
         }
     },
     components: {

@@ -6,7 +6,8 @@ var path = new Map();
 
 // 广告数据获取
 function serAd(request, response) {
-    advertiseDao.serchAd(function (result) {
+    var params = url.parse(request.url, true).query;
+    advertiseDao.serchAd(parseInt(params.offset), parseInt(params.limit), function (result) {
         response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
         response.write(JSON.stringify(result));
         response.end();
