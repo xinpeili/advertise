@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="top col-xs-12">
+                <span class="title">广告管理系统</span>
+                <span style="color: #fff; cursor: pointer;" class="icon glyphicon glyphicon-menu-hamburger"></span>
+                <form class="form-inline">
+                    <div class="form-group">
+                      <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Email">
+                    </div>
+                    <span class="search glyphicon glyphicon-search"></span>
+                </form>
+                <span class="user-name-title"></span>
+            </div>
+            <div class="content-wrapper">
+                <div class="nav">
+                    <ul>
+                        <li><a href="./index.html">我发布的广告</a></li>
+                        <li><a href="./add.html">添加广告</a></li>
+                        <li><a href="./message.html" class="active">个人信息</a></li>
+                    </ul>
+                </div>
+                <div class="content">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.js"></script>
+    <script>
+        var userName = $.cookie("user_name")
+        if (userName) {
+            // 获取用户名
+            $(".user-name-title").html("欢迎您：" + $.cookie("user_name"));
+            
+            $(".user-name .box").find("input").attr("placeholder", userName);
+        } else {
+            alert("请先登录");
+            $(location).attr("href", "login.html");
+        }
+    </script>
+</body>
+</html>
