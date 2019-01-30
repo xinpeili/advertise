@@ -40,12 +40,14 @@ export default {
     data() {
         return {
             adMsgArr: [],
+            allAdNum: 0,
+            times: 0,
             flag: true
         }
     },
     created() {
         axios.get('/api/serAd?offset=0&limit=9').then(res => {
-            this.adMsgArr = res.data;
+            this.adMsgArr = res.data.rows;
             console.log(this.adMsgArr)
         })
     },
@@ -60,30 +62,30 @@ export default {
         },
         // 滚动时触发
         handleScroll() {
-            if(this.$refs.element) {
+            if(this.$refs.element && this.adMsgArr.length > this.allAdNum) {
                 var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop;
                 var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
                 var adBoxHeight = this.$refs.element.offsetHeight;
                 if(scrollHeight + clientHeight >= adBoxHeight + 460 && this.flag) {
                     this.flag = false;
-                    this.onSearch();
+                    // loading动画
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
                     // 发送ajax
-                    console.log(111)
+                    axios.get(`/api/serAd?offset=${9 + this.times * 6}&limit=6`).then(res => {
+                        loading.close();
+                        this.times ++;
+                        this.allAdNum = res.total;
+                        this.adMsgArr = this.adMsgArr.concat(res.data.rows);
+                        this.flag = true;
+                    })
                 }
             }
             
-        },
-        // loading动画
-        onSearch() {
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            setTimeout(() => {
-                loading.close();
-            }, 2000);
         }
     },
     components: {

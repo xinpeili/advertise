@@ -8,9 +8,11 @@ var path = new Map();
 function serAd(request, response) {
     var params = url.parse(request.url, true).query;
     advertiseDao.serchAd(parseInt(params.offset), parseInt(params.limit), function (result) {
-        response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
-        response.write(JSON.stringify(result));
-        response.end();
+        advertiseDao.serchAllad(function (count) {
+            response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+            response.write(JSON.stringify({total: count[0].count, rows: result}));
+            response.end();
+        })
     })
 }
 path.set("/serAd", serAd);

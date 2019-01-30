@@ -61,6 +61,21 @@ function serchAd(offset, limit, success) {
     connection.end();
 }
 
+// 查询广告总数
+function serchAllad(success) {
+    var connection = dbutil.createConnection();
+    var serchSql = "select count(1) as count from advertise;"
+    connection.connect();
+    connection.query(serchSql, function (err, res) {
+        if(err == null) {
+            success(res)
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
 // 更改广告views信息
 function updateViews(views, title, success) {
     var connection = dbutil.createConnection();
@@ -163,6 +178,7 @@ module.exports = {
     "insertLogin": insertLogin,
     "serchLogin": serchLogin,
     "serchAd": serchAd,
+    "serchAllad": serchAllad,
     "updateViews": updateViews,
     "serchMyRelease": serchMyRelease,
     "serchMyCount": serchMyCount,
