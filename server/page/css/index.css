@@ -22,6 +22,34 @@ body,
     float: right;
     margin-top: 3px;
 }
+.top .form-inline .form-group {
+    position: relative;
+}
+.top .form-inline .form-group .search-list {
+    position: absolute;
+    top: 35px;
+    width: 232px;
+    background: #fff;
+    z-index: 10000;
+    list-style: none;
+    padding: 5px 0;
+    font-size: 16px;
+    border-radius: 5px;
+    box-shadow: #999 0 0 5px;
+    display: none;
+}
+.top .form-inline .form-group .search-list li {
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.4s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.top .form-inline .form-group .search-list li:hover {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
 .top .form-inline .search {
     display: inline-block;
     width: 42px;

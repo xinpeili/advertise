@@ -40,6 +40,17 @@ function myRelease(request, response) {
 }
 path.set("/myRelease", myRelease);
 
+// 我发布的所有广告
+function myReleaseAll(request, response) {
+    var params = url.parse(request.url, true).query;
+    advertiseDao.serchMyReleaseAll(params.userName, function (result) {
+        response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+        response.write(JSON.stringify(result));
+        response.end();
+    })
+}
+path.set("/myReleaseAll", myReleaseAll);
+
 // 添加广告信息（上传）
 function addAdMsg(request, response) {
     var params = url.parse(request.url, true).query;

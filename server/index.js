@@ -28,6 +28,7 @@ app.get("/serAd", loader.get("/serAd"));
 app.get("/addViews", loader.get("/updateViews"));
 // 我发布的广告
 app.get("/myRelease", loader.get("/myRelease"));
+app.get("/myReleaseAll", loader.get("/myReleaseAll"));
 // 添加广告信息
 app.post("/addAdMsg", uploadSingle.single("file"), loader.get("/addAdMsg"));
 // 读取文件信息

@@ -94,6 +94,21 @@ function updateViews(views, title, success) {
     connection.end();
 }
 
+// 根据用户名查询发布的所有广告信息
+function serchMyReleaseAll(userName, success) {
+    var connection = dbutil.createConnection();
+    var serchSql = "select * from advertise where user_name = ? order by ctime desc;";
+    connection.connect();
+    connection.query(serchSql, userName, function (err, res) {
+        if(err == null) {
+            success(res)
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
 // 根据用户名查询发布的广告信息
 function serchMyRelease(userName, offset, limit, success) {
     var connection = dbutil.createConnection();
@@ -181,6 +196,7 @@ module.exports = {
     "serchAllad": serchAllad,
     "updateViews": updateViews,
     "serchMyRelease": serchMyRelease,
+    "serchMyReleaseAll": serchMyReleaseAll,
     "serchMyCount": serchMyCount,
     "insertAdMsg": insertAdMsg,
     "delateMsg": delateMsg,

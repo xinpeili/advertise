@@ -10,6 +10,7 @@ if($.cookie("user_name")) {
             renderAllData(JSON.parse(res).rows);
             renderTurnPage(JSON.parse(res).total);
             bindSubClick();
+            searchFocus();
             console.log(JSON.parse(res));
         });
     }
@@ -112,27 +113,74 @@ if($.cookie("user_name")) {
                     sendAjax('GET', `/delateMsg?ad_id=${data[index].ad_id}`, function (res) {
                         alert(res)
                     });
-                    console.log(data[index].ad_id)
-                    data.remove(data[index]);
-                    renderAllData(data, firstNum);
+                    sendAjax('GET', `/myRelease?userName=${$.cookie("user_name")}&offset=0&limit=8`, function (res) {
+                        console.log(data[index].ad_id)
+                        data.remove(data[index]);
+                        renderAllData(JSON.parse(res).rows, firstNum);
+                        renderTurnPage(JSON.parse(res).total);
+                    });
                 }
             })
+        })
+    }
+
+    // 搜索聚焦，得到所有数据
+    function searchFocus() {
+        sendAjax('GET', `/myReleaseAll?userName=${$.cookie("user_name")}`, function (res) {
+            filterAd(JSON.parse(res))
+        });
+    }
+
+    // 根据输入信息过滤
+    function filterAd(data) {
+        $(".search-box").find("input").on("input", function () {
+            var val = $(this).val();
+            var str = "";
+            var dataArr = [];
+            data.forEach((ele, index) => {
+                if(ele.title.indexOf(val) !== -1) {
+                    dataArr.push(ele);
+                    str += `<li data-toggle="modal" data-target="#myModal">${ele.title}</li>`;
+                }
+            })
+            if(JSON.stringify(dataArr) === "[]" || val === "") {
+                $(".search-list").css("display", "none");
+            } else {
+                $(".search-list").html(str).css("display", "block");
+                dataArr.forEach((ele, index) => {
+                    $(".search-list").find("li").eq(index).on("click", function() {
+                        idObj.id = dataArr[index].ad_id;
+                        // console.log(dataArr[index].ad_id)
+                        $(".search-list").css("display", "none");
+                        $(".form-group").find("input").val("");
+                        $("#myModal").find("#title").val(ele.title);
+                        $("#myModal").find("#company").val(ele.company);
+                        $("#myModal").find("#type").val(ele.type);
+                        $("#myModal").find("#target").val(ele.target);
+                        $("#myModal").find("#message-text").html(ele.about)
+                    })
+                })
+            }
+            
         })
     }
 
     // 绑定提交
     function bindSubClick() {
         $("#myModal").find("#submit").on("click", function (e) {
-            // e.preventDefault();
             console.log(idObj.id)
             var title = $("#myModal").find("#title").val()
             var company = $("#myModal").find("#company").val()
             var type = $("#myModal").find("#type").val()
             var target = $("#myModal").find("#target").val()
             var about = $("#myModal").find("#message-text").html()
-            sendAjax('GET', `/modifyMsg?title=${title}&company=${company}&type=${type}&target=${target}&about=${about}&adId=${idObj.id}`, function (res) {
-                alert(res)
-            })
+            if(title && company && type && target && about) {
+                sendAjax('GET', `/modifyMsg?title=${title}&company=${company}&type=${type}&target=${target}&about=${about}&adId=${idObj.id}`, function (res) {
+                    alert(res)
+                })
+            } else {
+                alert("请填写完整信息");
+            }
         })
     }
 

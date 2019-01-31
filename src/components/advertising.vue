@@ -48,6 +48,7 @@ export default {
     created() {
         axios.get('/api/serAd?offset=0&limit=9').then(res => {
             this.adMsgArr = res.data.rows;
+            this.allAdNum = res.data.total;
             console.log(this.adMsgArr)
         })
     },
@@ -62,10 +63,12 @@ export default {
         },
         // 滚动时触发
         handleScroll() {
-            if(this.$refs.element && this.adMsgArr.length > this.allAdNum) {
+            console.log(this.adMsgArr.length, this.allAdNum);
+            if(this.$refs.element && this.adMsgArr.length < this.allAdNum) {
                 var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop;
                 var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
                 var adBoxHeight = this.$refs.element.offsetHeight;
+                console.log(scrollHeight + clientHeight >= adBoxHeight + 460)
                 if(scrollHeight + clientHeight >= adBoxHeight + 460 && this.flag) {
                     this.flag = false;
                     // loading动画
@@ -78,8 +81,8 @@ export default {
                     // 发送ajax
                     axios.get(`/api/serAd?offset=${9 + this.times * 6}&limit=6`).then(res => {
                         loading.close();
+                        console.log(res)
                         this.times ++;
-                        this.allAdNum = res.total;
                         this.adMsgArr = this.adMsgArr.concat(res.data.rows);
                         this.flag = true;
                     })
