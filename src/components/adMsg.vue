@@ -31,18 +31,48 @@
                     <li v-for="(item, index) in targetArr" :key="index">{{item}}</li>
                 </ul>
             </div>
+            <div class="timing">
+                <el-button type="primary" :disabled="!flag" @click="startTime">立即投放</el-button>
+                <div class="time_box">
+                    <el-input v-model="time" :disabled="true"></el-input>
+                </div>
+                <el-button type="primary" :disabled="flag" @click="endTime">停止计时</el-button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
+    data() {
+        return {
+            time: 0,
+            timer: null
+        }
+    },
     computed: {
         adArr () {
             return this.$store.state.adArr;
         },
         targetArr () {
             return this.adArr.target.split("；");
+        },
+        flag () {
+            if(this.time !== 0) {
+                return false;
+            }
+            return true;
+        }
+    },
+    methods: {
+        startTime () {
+            this.timer = setInterval(() => {
+                this.time ++;
+            }, 1000)
+        },
+        endTime () {
+            clearInterval(this.timer);
+            this.time = 0;
         }
     }
 }
@@ -151,6 +181,13 @@ export default {
                     list-style: disc;
                     margin-left: 20px;
                 }
+            }
+        }
+        .timing {
+            width: 100%;
+            .time_box {
+                display: inline-block;
+                width: 100px;
             }
         }
     }

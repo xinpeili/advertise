@@ -112,12 +112,12 @@ if($.cookie("user_name")) {
                 if(confirm("确认删除该条数据？")) {
                     sendAjax('GET', `/delateMsg?ad_id=${data[index].ad_id}`, function (res) {
                         alert(res)
-                    });
-                    sendAjax('GET', `/myRelease?userName=${$.cookie("user_name")}&offset=0&limit=8`, function (res) {
-                        console.log(data[index].ad_id)
-                        data.remove(data[index]);
-                        renderAllData(JSON.parse(res).rows, firstNum);
-                        renderTurnPage(JSON.parse(res).total);
+                            sendAjax('GET', `/myRelease?userName=${$.cookie("user_name")}&offset=${firstNum}&limit=8`, function (res) {
+                            console.log(data[index].ad_id)
+                            data.remove(data[index]);
+                            renderAllData(JSON.parse(res).rows, firstNum);
+                            renderTurnPage(JSON.parse(res).total);
+                        });
                     });
                 }
             })

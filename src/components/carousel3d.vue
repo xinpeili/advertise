@@ -69,6 +69,10 @@ export default {
             ]
         }
     },
+    // props: ["slides"],
+    // created () {
+    //     console.log(this.slides);
+    // },
     methods: {
         getImgURL (imageId) {
             return this.slides[imageId].src;

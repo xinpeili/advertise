@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <!-- 3d轮播插件 -->
-        <carousel3d></carousel3d>
+        <carousel3d :slides="Slides3dPic"></carousel3d>
 
         <div ref="element" class="ad-box">
             <router-link v-for="(item,index) in adMsgArr" :key="index" class="ad-list" tag="div" :to="{name: 'AdMsg', params: {id: '2019' + item.ad_id}}">
@@ -40,6 +40,7 @@ export default {
     data() {
         return {
             adMsgArr: [],
+            Slides3dPic: [],
             allAdNum: 0,
             times: 0,
             flag: true
@@ -50,6 +51,9 @@ export default {
             this.adMsgArr = res.data.rows;
             this.allAdNum = res.data.total;
             console.log(this.adMsgArr)
+        })
+        axios.get('/api/serAllPic').then(result => {
+            this.Slides3dPic = result.data;
         })
     },
     mounted() {
@@ -68,7 +72,7 @@ export default {
                 var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop;
                 var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
                 var adBoxHeight = this.$refs.element.offsetHeight;
-                console.log(scrollHeight + clientHeight >= adBoxHeight + 460)
+                // console.log(scrollHeight + clientHeight >= adBoxHeight + 460)
                 if(scrollHeight + clientHeight >= adBoxHeight + 460 && this.flag) {
                     this.flag = false;
                     // loading动画

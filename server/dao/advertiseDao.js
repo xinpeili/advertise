@@ -189,6 +189,67 @@ function modifyMsg(title, company, type, target, about, adId, success) {
     connection.end();
 }
 
+// 管理员获取所有用户信息
+function getAllUser(offset, limit, success) {
+    var connection = dbutil.createConnection();
+    var params = [offset, limit];
+    var updateSql = "select * from login order by ctime desc limit ?, ?;";
+    connection.connect();
+    connection.query(updateSql, params, function (err, res) {
+        if(err == null) {
+            success(res)
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
+// 查询所有用户信息数量
+function getAllUserCount(success) {
+    var connection = dbutil.createConnection();
+    var serchSql = "select count(1) as count from login;";
+    connection.connect();
+    connection.query(serchSql, function (err, res) {
+        if(err == null) {
+            success(res)
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
+// 删除用户
+function delateUser(id ,success) {
+    var connection = dbutil.createConnection();
+    var serchSql = "delete from login where id = ?;";
+    connection.connect();
+    connection.query(serchSql, id, function (err, res) {
+        if(err == null) {
+            success(res)
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
+// 获取3d轮播图片
+function serAllPic(success) {
+    var connection = dbutil.createConnection();
+    var serchSql = "select * from carousel3d";
+    connection.connect();
+    connection.query(serchSql,function (err, res) {
+        if(err == null) {
+            success(res)
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
 module.exports = {
     "insertLogin": insertLogin,
     "serchLogin": serchLogin,
@@ -200,7 +261,11 @@ module.exports = {
     "serchMyCount": serchMyCount,
     "insertAdMsg": insertAdMsg,
     "delateMsg": delateMsg,
-    "modifyMsg": modifyMsg
+    "modifyMsg": modifyMsg,
+    "getAllUser": getAllUser,
+    "getAllUserCount": getAllUserCount,
+    "delateUser": delateUser,
+    "serAllPic": serAllPic
 }
 
 

@@ -29,7 +29,11 @@ function send (userName, password) {
                 // 设置cookie
                 $.cookie("user_name", userName);
                 $.cookie("password", password);
-                $(location).attr("href", "index.html");
+                if(userName !== "admin") {
+                    $(location).attr("href", "index.html");
+                } else {
+                    $(location).attr("href", "adminIndex.html");
+                }
             } else {
                 alert("用户名或密码错误");
                 $(".password").find("input").val('');

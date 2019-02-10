@@ -36,7 +36,14 @@ app.get("/serPicMsg", loader.get("/serPicMsg"));
 // 删除广告信息
 app.get("/delateMsg", loader.get("/delateMsg"));
 // 修改广告信息
-app.get("/modifyMsg",loader.get("/modifyMsg"));
+app.get("/modifyMsg", loader.get("/modifyMsg"));
+
+// 管理员获取所有用户信息
+app.get("/getAllUser", loader.get("/getAllUser"));
+// 删除用户
+app.get("/delateUser", loader.get("/delateUser"));
+// 获取3d轮播图片
+app.get("/serAllPic", loader.get("/serAllPic"));
 
 app.listen(globalConfig["port"]);
 console.log(`success listen at port:${globalConfig["port"]}......`);

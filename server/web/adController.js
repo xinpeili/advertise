@@ -102,4 +102,38 @@ function modifyMsg(request, response) {
 }
 path.set("/modifyMsg", modifyMsg);
 
+// 管理员获取所有用户信息
+function getAllUser(request, response) {
+    var params = url.parse(request.url, true).query;
+    advertiseDao.getAllUser(parseInt(params.offset), parseInt(params.limit), function (result) {
+        advertiseDao.getAllUserCount(function (count) {
+            response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+            response.write(JSON.stringify({total: count[0].count, rows: result}));
+            response.end();
+        })
+    })
+}
+path.set("/getAllUser", getAllUser);
+
+// 删除用户
+function delateUser(request, response) {
+    var params = url.parse(request.url, true).query;
+    advertiseDao.delateUser(params.id, function (result) {
+        response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+        response.write("删除成功");
+        response.end();
+    })
+}
+path.set("/delateUser", delateUser);
+
+// 删除用户
+function serAllPic(request, response) {
+    advertiseDao.serAllPic(function (result) {
+        response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+        response.write(JSON.stringify(result));
+        response.end();
+    })
+}
+path.set("/serAllPic", serAllPic);
+
 module.exports.path = path;
