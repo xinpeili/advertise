@@ -44,6 +44,7 @@
                     // console.log(res.data[0])
                     if(res.data[0] && res.data[0].password === this.password) {
                         alert("登陆成功，欢迎您：" + this.userName);
+                        this.$cookieStore.setCookie('userName', this.userName, 86400);
                         this.emitIsFlag();
                         this.$emit("helloLogin", this.userName);
                     } else {

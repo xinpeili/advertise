@@ -23,7 +23,7 @@
     </div>
 
     <!-- footer -->
-    <!-- <footer-wrapper class="footer"></footer-wrapper> -->
+    <footer-wrapper class="footer"></footer-wrapper>
   </div>
 </template>
 

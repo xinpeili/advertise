@@ -31,7 +31,10 @@
                     <li v-for="(item, index) in targetArr" :key="index">{{item}}</li>
                 </ul>
             </div>
-            <div class="timing">
+            <div class="user">
+                <div class="target-text">发布者：{{adArr.user_name}}</div>
+            </div>
+            <div class="timing" v-if="isShow">
                 <el-button type="primary" :disabled="!flag" @click="startTime">立即投放</el-button>
                 <div class="time_box">
                     <el-input v-model="time" :disabled="true"></el-input>
@@ -39,6 +42,20 @@
                 <el-button type="primary" :disabled="flag" @click="endTime">停止计时</el-button>
             </div>
         </div>
+        <el-dialog title="投放报告" :visible.sync="dialogFormVisible">
+            <el-form :model="form">
+                <el-form-item label="广告名称" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="投放时间" :label-width="formLabelWidth">
+                    <el-input disabled=true v-model="form.time" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <!-- <el-button @click="dialogFormVisible = false">取 消</el-button> -->
+                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -47,10 +64,28 @@ export default {
     data() {
         return {
             time: 0,
-            timer: null
+            timer: null,
+            dialogTableVisible: false,
+            dialogFormVisible: false,
+            form: {
+                name: '',
+                time: '',
+                type: [],
+            },
+            formLabelWidth: '70px'
         }
     },
+    created () {
+        console.log(this.$cookieStore.getCookie("userName"));
+    },
     computed: {
+        curUser () {
+            // 有问题，不能及时刷新
+            return this.$cookieStore.getCookie("userName");
+        },
+        isShow () {
+            return this.adArr.user_name == this.curUser;
+        },
         adArr () {
             return this.$store.state.adArr;
         },
@@ -66,12 +101,23 @@ export default {
     },
     methods: {
         startTime () {
+            this.$message({
+                message: '投放成功',
+                type: 'success'
+            });
             this.timer = setInterval(() => {
                 this.time ++;
             }, 1000)
         },
         endTime () {
+            this.dialogFormVisible = true;
             clearInterval(this.timer);
+            this.form.name = this.adArr.title;
+            if (this.time < 60) {
+                this.form.time = this.time + '秒';
+            } else if (this.time > 60 && this.time < 3600) {
+                this.form.time = parseInt(this.time / 60) + '分' + parseInt(this.time % 60) + '秒';
+            }
             this.time = 0;
         }
     }
@@ -182,6 +228,10 @@ export default {
                     margin-left: 20px;
                 }
             }
+        }
+        .user {
+            color: #999;
+            margin-bottom: 30px;
         }
         .timing {
             width: 100%;

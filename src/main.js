@@ -8,11 +8,17 @@ import animated from 'animate.css'
 import store from './store'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import { setCookie, getCookie, delCookie } from '@/assets/js/cookie.js';
 
 Vue.use(ElementUI);
 Vue.use(animated)
 Vue.use(VueParticles)
 Vue.config.productionTip = false
+Vue.prototype.$cookieStore = {
+  setCookie,
+  getCookie,
+  delCookie
+}
 
 /* eslint-disable no-new */
 new Vue({
