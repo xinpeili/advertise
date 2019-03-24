@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '../components/home'
 import Advertising from '../components/advertising'
 import About from '../components/about'
+import myOrder from '../components/myOrder'
 import adMsg from '../components/adMsg'
 import error from '../components/error'
 
@@ -30,6 +31,11 @@ export default new Router({
       path: '/about',
       name: 'About',
       component: About
+    },
+    {
+      path: '/myOrder',
+      name: 'myOrder',
+      component: myOrder
     },
     {
       path: '/',

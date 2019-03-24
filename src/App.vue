@@ -6,6 +6,7 @@
       <router-link tag="li" :to="{name: 'Home'}">主页</router-link>
       <router-link tag="li" :to="{name: 'Advertising'}">广告浏览</router-link>
       <router-link tag="li" :to="{name: 'About'}">关于我们</router-link>
+      <router-link tag="li" :to="{name: 'myOrder'}">我的订单</router-link>
       <li class="btn-active" @click="isFlag">{{login}}</li>
       <span class="hello-name" v-show="userName">你好：{{userName}}</span>
     </ul>

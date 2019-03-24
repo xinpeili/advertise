@@ -53,7 +53,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <!-- <el-button @click="dialogFormVisible = false">取 消</el-button> -->
-                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                <el-button plain type="primary" @click="inTheOrder">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -123,6 +123,15 @@ export default {
                 this.form.time = parseInt(this.time / 60) + '分' + parseInt(this.time % 60) + '秒';
             }
             this.time = 0;
+        },
+        inTheOrder () {
+            this.dialogFormVisible = false;
+            const h = this.$createElement;
+            this.$notify({
+                title: '提交成功',
+                message: h('i', { style: 'color: teal'}, '已将订单放入“我的订单”中，请到“我的订单”中查看')
+            });
+            // 发送请求，添加订单
         }
     }
 }

@@ -3,6 +3,11 @@
         <!-- 3d轮播插件 -->
         <carousel3d :slides="Slides3dPic"></carousel3d>
 
+        <el-tabs class="tab" v-model="activeName" type="card" stretch=true @tab-click="handleClick">
+            <el-tab-pane label="全部" name="first"></el-tab-pane>
+            <el-tab-pane label="我发布的" name="second"></el-tab-pane>
+        </el-tabs>
+
         <div ref="element" class="ad-box">
             <router-link v-for="(item,index) in adMsgArr" :key="index" class="ad-list" tag="div" :to="{name: 'AdMsg', params: {id: '2019' + item.ad_id}}">
                 <div class="box" @click="setStore(index)">
@@ -39,6 +44,7 @@ import axios from 'axios'
 export default {
     data() {
         return {
+            activeName: 'first',
             adMsgArr: [],
             Slides3dPic: [],
             allAdNum: 0,
@@ -60,6 +66,19 @@ export default {
         window.addEventListener('scroll', this.handleScroll)
     },
     methods: {
+        handleClick(tab, event) {
+            console.log(tab, event);
+            if (tab.label == "全部") {
+                axios.get('/api/serAd?offset=0&limit=9').then(res => {
+                    this.adMsgArr = res.data.rows;
+                    this.allAdNum = res.data.total;
+                    console.log(this.adMsgArr)
+                })
+                axios.get('/api/serAllPic').then(result => {
+                    this.Slides3dPic = result.data;
+                })
+            }
+        },
         setStore(index) {
             this.$store.commit('setVal',this.adMsgArr[index]);
             // 让数据库中浏览量加一
@@ -103,6 +122,9 @@ export default {
 
 <style lang="stylus" scoped>
 .wrapper {
+    .tab {
+        padding: 0 100px 20px 100px;
+    }
     .ad-box {
         width: 1240px;
         display: flex;

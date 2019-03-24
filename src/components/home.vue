@@ -17,14 +17,29 @@
         clickEffect: 布尔类型。默认true。是否有click特效。
         clickMode: String类型。默认true。可用的click模式有: "push", "remove", "repulse", "bubble"。 -->
         <div class="searchBlock">
-            <vue-particles color="#dedede" :particleOpacity="0.5" :particlesNumber="80" shapeType="circle" :particleSize="5" linesColor="#ffffff" :linesWidth="2" :lineLinked="true" :lineOpacity="0.4" :linesDistance="170" :moveSpeed="5" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push" class="lizi">
-            </vue-particles>
-            <div class="particles-text">
-              <p>让感兴趣的客户</p>
-              <p>看到您的广告</p>
-            </div>
+          <vue-particles color="#dedede" :particleOpacity="0.5" :particlesNumber="80" shapeType="circle" :particleSize="5" linesColor="#ffffff" :linesWidth="2" :lineLinked="true" :lineOpacity="0.4" :linesDistance="170" :moveSpeed="5" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push" class="lizi">
+          </vue-particles>
+          <div class="particles-text">
+            <p>让感兴趣的客户</p>
+            <p>看到您的广告</p>
+          </div>
         </div>
-        home
+        <div class="wrapper">
+          <div class="content">
+            <div class="title">
+              <span class="num">01</span>
+              <span class="text">通过AI技术让投放更简单</span>
+            </div>
+            <div class="img"></div>
+          </div>
+          <div class="content">
+            <div class="title">
+              <span class="num">02</span>
+              <span class="text">把您的广告展现给精准的用户</span>
+            </div>
+            <div class="img1"></div>
+          </div>
+        </div>
     </div>
 </template>
 
@@ -36,34 +51,65 @@ export default {
 
 <style lang="stylus" scoped>
 .home {
-    .searchBlock {
-      position: relative;
-      margin-top: -82px;
+  .searchBlock {
+    position: relative;
+    margin-top: -82px;
+    width: 100%;
+    max-height: 550px;
+    overflow: hidden;
+    background-image: url("../assets/images/banner.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow: 0 5px 8px #999;
+    .lizi {
       width: 100%;
       max-height: 550px;
-      overflow: hidden;
-      background-image: url("../assets/images/banner.png");
-      background-repeat: no-repeat;
-      background-size: cover;
-      box-shadow: 0 5px 8px #999;
-      .lizi {
-        width: 100%;
-        max-height: 550px;
-      }
-      .particles-text {
-        color: #fff;
-        font-size: 30px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%)
-        p:last-of-type {
-          font-size: 50px;
-          font-weight: bold
-          margin-top: 30px;
-        }
+    }
+    .particles-text {
+      color: #fff;
+      font-size: 30px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%)
+      p:last-of-type {
+        font-size: 50px;
+        font-weight: bold
+        margin-top: 30px;
       }
     }
+  }
+  .wrapper {
+    padding: 100px 50px;
+    display: flex;
+    .content {
+      flex: 1;
+      text-align: center;
+      padding-bottom: 50px;
+      .title {
+        font-size: 0;
+        .num {
+          font-size: 32px;
+          color: #999;
+        }
+        .text {
+          font-size: 30px;
+        }
+      }
+      .img {
+        margin: 0 auto;
+        width: 300px;
+        height: 300px;
+        background: url("../assets/images/AItoufan.png") no-repeat center center;
+      }
+      .img1 {
+        margin: 0 auto;
+        width: 300px;
+        height: 300px;
+        background: url("../assets/images/showUser.png") no-repeat center center;
+      }
+    }
+  }
 }
 </style>
 
