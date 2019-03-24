@@ -20,7 +20,8 @@
 </template>
 
 <script>
-    import axios from 'axios'
+    import axios from 'axios';
+    import { mapState, mapMutations } from 'vuex';
 
     export default {
       data () {
@@ -30,11 +31,13 @@
         }
       },
       methods:{
+        ...mapMutations({
+            setCurUser: 'setCurUser'
+        }),
         emitIsFlag () {
             this.$emit("isEmit");
         },
         login () {
-            console.log(111)
             if(this.userName==""){
                 alert("用户名不能为空");
             }else if(this.password.length < 6){
@@ -44,7 +47,10 @@
                     // console.log(res.data[0])
                     if(res.data[0] && res.data[0].password === this.password) {
                         alert("登陆成功，欢迎您：" + this.userName);
+                        console.log(this.$cookieStore)
+                        console.log(this.userName);
                         this.$cookieStore.setCookie('userName', this.userName, 86400);
+                        this.setCurUser(this.userName);
                         this.emitIsFlag();
                         this.$emit("helloLogin", this.userName);
                     } else {

@@ -14,7 +14,7 @@
     <div class="mask" v-if="flag"></div>
     <!-- 动画插件 -->
     <transition enter-active-class="animated zoomIn" leave-active-class="animated zoomOut" :duration="{enter:600,leave:500}">
-      <login v-if="flag" @isEmit="isFlag" @helloLogin="helloLogin"></login>
+      <login v-if="flag" @isEmit="emitFlag" @helloLogin="helloLogin"></login>
     </transition>
 
     <!-- content -->
@@ -28,24 +28,45 @@
 </template>
 
 <script>
+
 import login from './components/login'
 import footerWrapper from './components/footer'
+import { mapState, mapMutations } from 'vuex';
+
 export default {
   data () {
     return {
       flag: false,
-      login: '登陆',
-      userName: ''
+      login: '登陆'
+      // userName: ''
+    }
+  },
+  computed: {
+    ...mapState({
+      userName: state => state.curUser
+    })
+  },
+  created() {
+    if (this.userName) {
+      this.helloLogin(this.userName);
     }
   },
   methods: {
+    ...mapMutations({
+      setCurUser: 'setCurUser'
+    }),
     isFlag() {
       this.flag = !this.flag;
-      this.userName = '';
+      // this.userName = '';
+      this.$cookieStore.delCookie('userName');
+      this.setCurUser('');
       this.login = '登录';
     },
+    emitFlag() {
+      this.flag = !this.flag;
+    },
     helloLogin(data) {
-      this.userName = data;
+      this.setCurUser(data);
       this.login = '登出';
     }
   },

@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
 export default {
     data() {
         return {
@@ -79,10 +80,13 @@ export default {
         console.log(this.$cookieStore.getCookie("userName"));
     },
     computed: {
-        curUser () {
-            // 有问题，不能及时刷新
-            return this.$cookieStore.getCookie("userName");
-        },
+        ...mapState({
+            curUser: state => state.curUser
+        }),
+        // curUser () {
+        //     // 有问题，不能及时刷新
+        //     return this.$cookieStore.getCookie("userName");
+        // },
         isShow () {
             return this.adArr.user_name == this.curUser;
         },
