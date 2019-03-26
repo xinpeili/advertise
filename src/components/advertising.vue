@@ -3,8 +3,8 @@
         <!-- 3d轮播插件 -->
         <carousel3d :slides="Slides3dPic"></carousel3d>
 
-        <el-tabs class="tab" v-model="activeName" type="card" stretch=true @tab-click="handleClick">
-            <el-tab-pane label="全部" name="first"></el-tab-pane>
+        <el-tabs class="tab" v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="全部广告" name="first"></el-tab-pane>
             <el-tab-pane label="我发布的" name="second"></el-tab-pane>
         </el-tabs>
 
@@ -77,6 +77,8 @@ export default {
                 axios.get('/api/serAllPic').then(result => {
                     this.Slides3dPic = result.data;
                 })
+            } else {
+                
             }
         },
         setStore(index) {
