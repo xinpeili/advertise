@@ -34,6 +34,7 @@
                     </div>
                 </div>
             </router-link>
+            <h3 v-if="textFlag">暂未发布广告</h3>
         </div>
     </div>
 </template>
@@ -49,7 +50,8 @@ export default {
             Slides3dPic: [],
             allAdNum: 0,
             times: 0,
-            flag: true
+            flag: true,
+            textFlag: false
         }
     },
     created() {
@@ -68,6 +70,7 @@ export default {
     methods: {
         handleClick(tab, event) {
             console.log(tab, event);
+            this.textFlag = false;
             if (tab.label == "全部") {
                 axios.get('/api/serAd?offset=0&limit=9').then(res => {
                     this.adMsgArr = res.data.rows;
@@ -78,7 +81,19 @@ export default {
                     this.Slides3dPic = result.data;
                 })
             } else {
-                
+                // 后端
+                axios.get('/api/serMyAd?offset=0&limit=9').then(res => {
+                    if (res.data.rows.length == 0) {
+                        this.textFlag = true;
+                        return;
+                    }
+                    this.adMsgArr = res.data.rows;
+                    this.allAdNum = res.data.total;
+                    console.log(this.adMsgArr)
+                })
+                axios.get('/api/serAllPic').then(result => {
+                    this.Slides3dPic = result.data;
+                })
             }
         },
         setStore(index) {
