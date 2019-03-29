@@ -17,6 +17,19 @@ function serAd(request, response) {
 }
 path.set("/serAd", serAd);
 
+// 根据用户名查询广告数据
+function serMyAd(request, response) {
+    var params = url.parse(request.url, true).query;
+    advertiseDao.serchAd(params.userName, parseInt(params.offset), parseInt(params.limit), function (result) {
+        advertiseDao.serchAllad(function (count) {
+            response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+            response.write(JSON.stringify({total: count[0].count, rows: result}));
+            response.end();
+        })
+    })
+}
+path.set("/serMyAd", serMyAd);
+
 // 使views加一
 function updateViews(request, response) {
     var params = url.parse(request.url, true).query;
@@ -26,6 +39,14 @@ function updateViews(request, response) {
     })
 }
 path.set("/updateViews", updateViews);
+
+function order(request, response) {
+    var params = url.parse(request.url, true).query;
+    advertiseDao.order(params.userName, params.adName, params.time, function () {
+        response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+        response.end();
+    })
+}
 
 // 我发布的广告
 function myRelease(request, response) {

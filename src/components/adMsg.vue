@@ -61,6 +61,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
+import axios from 'axios';
 export default {
     data() {
         return {
@@ -75,9 +76,6 @@ export default {
             },
             formLabelWidth: '70px'
         }
-    },
-    created () {
-        console.log(this.$cookieStore.getCookie("userName"));
     },
     computed: {
         ...mapState({
@@ -113,7 +111,7 @@ export default {
                 this.time ++;
             }, 1000)
         },
-        endTime () {
+        async endTime () {
             this.dialogFormVisible = true;
             clearInterval(this.timer);
             this.form.name = this.adArr.title;
@@ -121,6 +119,24 @@ export default {
                 this.form.time = this.time + '秒';
             } else if (this.time > 60 && this.time < 3600) {
                 this.form.time = parseInt(this.time / 60) + '分' + parseInt(this.time % 60) + '秒';
+            }
+            try {
+               // 发送请求提交订单
+                const {data, ok} = await axios.get(`/api/order?userName=${this.curUser}&adName=${this.form.name}&time=${this.form.time}`)
+                if (!ok) {
+                    this.$message({
+                        showClose: true,
+                        message: '投放失败了！请重新开始投放',
+                        type: 'error'
+                    });
+                    return;
+                } 
+            } catch (error) {
+                this.$message({
+                    showClose: true,
+                    message: '网络错误',
+                    type: 'error'
+                });
             }
             this.time = 0;
         },
@@ -131,7 +147,6 @@ export default {
                 title: '提交成功',
                 message: h('i', { style: 'color: teal'}, '已将订单放入“我的订单”中，请到“我的订单”中查看')
             });
-            // 发送请求，添加订单
         }
     }
 }

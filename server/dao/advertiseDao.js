@@ -94,6 +94,23 @@ function updateViews(views, title, success) {
     connection.end();
 }
 
+// 提交投放订单
+function order(user_name, ad_name, time, success) {
+    var date = new Date();
+    var connection = dbutil.createConnection();
+    var serchSql = "insert into advertise (user_name, ad_name, time, ctime) values (?, ?, ?)"
+    var params = [user_name, ad_name, time, data];
+    connection.connect();
+    connection.query(serchSql, params, function (err, res) {
+        if(err == null) {
+            success()
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
 // 根据用户名查询发布的所有广告信息
 function serchMyReleaseAll(userName, success) {
     var connection = dbutil.createConnection();

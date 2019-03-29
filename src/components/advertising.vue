@@ -51,7 +51,8 @@ export default {
             allAdNum: 0,
             times: 0,
             flag: true,
-            textFlag: false
+            textFlag: false,
+            userName: this.$cookieStore.getCookie("userName")
         }
     },
     created() {
@@ -82,7 +83,7 @@ export default {
                 })
             } else {
                 // 后端
-                axios.get('/api/serMyAd?offset=0&limit=9').then(res => {
+                axios.get(`/api/serMyAd?userName=${userName}&offset=0&limit=9`).then(res => {
                     if (res.data.rows.length == 0) {
                         this.textFlag = true;
                         return;
