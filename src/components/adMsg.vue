@@ -48,7 +48,7 @@
                     <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="投放时间" :label-width="formLabelWidth">
-                    <el-input disabled=true v-model="form.time" autocomplete="off"></el-input>
+                    <el-input :disabled="true" v-model="form.time" autocomplete="off"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -61,6 +61,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
+import axios from 'axios';
 export default {
     data() {
         return {
@@ -73,11 +74,9 @@ export default {
                 time: '',
                 type: [],
             },
-            formLabelWidth: '70px'
+            formLabelWidth: '70px',
+            subFlag: 'true'
         }
-    },
-    created () {
-        console.log(this.$cookieStore.getCookie("userName"));
     },
     computed: {
         ...mapState({
@@ -113,7 +112,7 @@ export default {
                 this.time ++;
             }, 1000)
         },
-        endTime () {
+        async endTime () {
             this.dialogFormVisible = true;
             clearInterval(this.timer);
             this.form.name = this.adArr.title;
@@ -122,16 +121,36 @@ export default {
             } else if (this.time > 60 && this.time < 3600) {
                 this.form.time = parseInt(this.time / 60) + '分' + parseInt(this.time % 60) + '秒';
             }
+            try {
+                this.subFlag = true;
+                const data = await axios.get(`/api/order?userName=${this.curUser}&adName=${this.form.name}&time=${this.form.time}`)
+                console.log(data)
+                if (data.statusText != 'OK') {
+                    this.$message({
+                        showClose: true,
+                        message: '投放失败了！请重新开始投放',
+                        type: 'error'
+                    });
+                    return;
+                } 
+            } catch (error) {
+                this.subFlag = false
+                this.$message({
+                    showClose: true,
+                    message: '网络错误',
+                    type: 'error'
+                });
+            }
             this.time = 0;
         },
         inTheOrder () {
             this.dialogFormVisible = false;
+            if(!this.subFlag) return;
             const h = this.$createElement;
             this.$notify({
                 title: '提交成功',
                 message: h('i', { style: 'color: teal'}, '已将订单放入“我的订单”中，请到“我的订单”中查看')
             });
-            // 发送请求，添加订单
         }
     }
 }

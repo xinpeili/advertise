@@ -25,7 +25,12 @@ app.get("/addLogin", loader.get("/addLogin"));
 app.get("/serLogin", loader.get("/serLogin"));
 // 广告
 app.get("/serAd", loader.get("/serAd"));
+app.get("/serMyAd", loader.get("/serMyAd"));
 app.get("/addViews", loader.get("/updateViews"));
+// 提交订单
+app.get("/order", loader.get("/order"));
+// 获取订单
+app.get("/getOrder", loader.get("/getOrder"));
 // 我发布的广告
 app.get("/myRelease", loader.get("/myRelease"));
 app.get("/myReleaseAll", loader.get("/myReleaseAll"));

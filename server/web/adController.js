@@ -17,6 +17,19 @@ function serAd(request, response) {
 }
 path.set("/serAd", serAd);
 
+// 根据用户名查询广告数据
+function serMyAd(request, response) {
+    var params = url.parse(request.url, true).query;
+    advertiseDao.serchAdByName(params.userName, parseInt(params.offset), parseInt(params.limit), function (result) {
+        advertiseDao.serchAllad(function (count) {
+            response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+            response.write(JSON.stringify({total: count[0].count, rows: result}));
+            response.end();
+        })
+    })
+}
+path.set("/serMyAd", serMyAd);
+
 // 使views加一
 function updateViews(request, response) {
     var params = url.parse(request.url, true).query;
@@ -26,6 +39,30 @@ function updateViews(request, response) {
     })
 }
 path.set("/updateViews", updateViews);
+
+// 提交订单
+function order(request, response) {
+    var params = url.parse(request.url, true).query;
+    advertiseDao.order(params.userName, params.adName, params.time, function (res) {
+        response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+        response.write(JSON.stringify({ok: 'ok', data: res}));
+        response.end();
+    })
+}
+path.set("/order", order);
+
+// 获取订单
+function getOrder(request, response) {
+    var params = url.parse(request.url, true).query;
+    advertiseDao.getOrder(params.userName, parseInt(params.offset), parseInt(params.limit), function (res) {
+        advertiseDao.getOrderAll(params.userName, function (count) {
+            response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+            response.write(JSON.stringify({total: count[0].count, rows: res}));
+            response.end();
+        })
+    })
+}
+path.set("/getOrder", getOrder);
 
 // 我发布的广告
 function myRelease(request, response) {

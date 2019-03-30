@@ -61,6 +61,21 @@ function serchAd(offset, limit, success) {
     connection.end();
 }
 
+function serchAdByName(userName, offset, limit, success) {
+    var connection = dbutil.createConnection();
+    var serchSql = "select * from advertise where user_name = ? order by ctime desc limit ?, ?;"
+    var params = [userName, offset, limit];
+    connection.connect();
+    connection.query(serchSql, params, function (err, res) {
+        if(err == null) {
+            success(res)
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
 // 查询广告总数
 function serchAllad(success) {
     var connection = dbutil.createConnection();
@@ -89,6 +104,54 @@ function updateViews(views, title, success) {
             success();
         } else {
             throw new Error(err)
+        }
+    })
+    connection.end();
+}
+
+// 提交投放订单
+function order(user_name, ad_title, time, success) {
+    var date = new Date();
+    var connection = dbutil.createConnection();
+    var serchSql = "insert into my_order (user_name, ad_title, time, ctime) values (?, ?, ?, ?)"
+    var params = [user_name, ad_title, time, date];
+    connection.connect();
+    connection.query(serchSql, params, function (err, res) {
+        if(err == null) {
+            success(res)
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
+// 查询我的订单
+function getOrder(user_name, offset, limit, success) {
+    var connection = dbutil.createConnection();
+    var serchSql = "select * from my_order where user_name = ? order by ctime desc limit ?, ?;"
+    var params = [user_name, offset, limit];
+    connection.connect();
+    connection.query(serchSql, params, function (err, res) {
+        if(err == null) {
+            success(res)
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
+// 查询订单总数
+function getOrderAll(user_name, success) {
+    var connection = dbutil.createConnection();
+    var serchSql = "select count(1) as count from my_order where user_name = ?;";
+    connection.connect();
+    connection.query(serchSql, user_name, function (err, res) {
+        if(err == null) {
+            success(res)
+        } else {
+            throw new Error(err);
         }
     })
     connection.end();
@@ -254,8 +317,12 @@ module.exports = {
     "insertLogin": insertLogin,
     "serchLogin": serchLogin,
     "serchAd": serchAd,
+    "serchAdByName": serchAdByName,
     "serchAllad": serchAllad,
     "updateViews": updateViews,
+    "order": order,
+    "getOrder": getOrder,
+    "getOrderAll": getOrderAll,
     "serchMyRelease": serchMyRelease,
     "serchMyReleaseAll": serchMyReleaseAll,
     "serchMyCount": serchMyCount,

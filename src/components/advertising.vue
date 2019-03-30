@@ -4,7 +4,7 @@
         <carousel3d :slides="Slides3dPic"></carousel3d>
 
         <el-tabs class="tab" v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="全部" name="first"></el-tab-pane>
+            <el-tab-pane label="全部广告" name="first"></el-tab-pane>
             <el-tab-pane label="我发布的" name="second"></el-tab-pane>
         </el-tabs>
 
@@ -34,13 +34,15 @@
                     </div>
                 </div>
             </router-link>
+            <h3 v-if="textFlag">暂未发布广告</h3>
         </div>
     </div>
 </template>
 
 <script>
-import carousel3d from './carousel3d'
-import axios from 'axios'
+import carousel3d from './carousel3d';
+import axios from 'axios';
+import { mapState, mapMutations } from 'vuex';
 export default {
     data() {
         return {
@@ -49,8 +51,15 @@ export default {
             Slides3dPic: [],
             allAdNum: 0,
             times: 0,
-            flag: true
+            flag: true,
+            textFlag: false,
+            curUrl: '/api/serAd?'
         }
+    },
+    computed: {
+        ...mapState({
+            curUser: state => state.curUser
+        })
     },
     created() {
         axios.get('/api/serAd?offset=0&limit=9').then(res => {
@@ -67,12 +76,28 @@ export default {
     },
     methods: {
         handleClick(tab, event) {
-            // console.log(tab, event);
-            if (tab.label == "全部") {
+            this.textFlag = false;
+            if (tab.label == "全部广告") {
+                this.curUrl = '/api/serAd?';
+                this.times = 0;
                 axios.get('/api/serAd?offset=0&limit=9').then(res => {
                     this.adMsgArr = res.data.rows;
                     this.allAdNum = res.data.total;
-                    console.log(this.adMsgArr)
+                })
+                axios.get('/api/serAllPic').then(result => {
+                    this.Slides3dPic = result.data;
+                })
+            } else {
+                this.curUrl = `/api/serMyAd?userName=${this.curUser}&`;
+                this.times = 0
+                axios.get(`/api/serMyAd?userName=${this.curUser}&offset=0&limit=9`).then(res => {
+                    if (res.data.rows.length == 0) {
+                        this.textFlag = true;
+                        this.adMsgArr = [];
+                        return;
+                    }
+                    this.adMsgArr = res.data.rows;
+                    this.allAdNum = res.data.total;
                 })
                 axios.get('/api/serAllPic').then(result => {
                     this.Slides3dPic = result.data;
@@ -86,7 +111,8 @@ export default {
         },
         // 滚动时触发
         handleScroll() {
-            console.log(this.adMsgArr.length, this.allAdNum);
+            if (this.adMsgArr.length == 0) return;
+            // console.log(this.adMsgArr.length, this.allAdNum);
             if(this.$refs.element && this.adMsgArr.length < this.allAdNum) {
                 var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop;
                 var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
@@ -102,9 +128,8 @@ export default {
                         background: 'rgba(0, 0, 0, 0.7)'
                     });
                     // 发送ajax
-                    axios.get(`/api/serAd?offset=${9 + this.times * 6}&limit=6`).then(res => {
+                    axios.get(`${this.curUrl}offset=${9 + this.times * 6}&limit=6`).then(res => {
                         loading.close();
-                        console.log(res)
                         this.times ++;
                         this.adMsgArr = this.adMsgArr.concat(res.data.rows);
                         this.flag = true;
