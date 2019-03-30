@@ -3,7 +3,7 @@
         <!-- 3d轮播插件 -->
         <carousel3d :slides="Slides3dPic"></carousel3d>
 
-        <el-tabs class="tab" v-model="activeName" type="card" stretch=true @tab-click="handleClick">
+        <el-tabs class="tab" v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="全部" name="first"></el-tab-pane>
             <el-tab-pane label="我发布的" name="second"></el-tab-pane>
         </el-tabs>
@@ -67,7 +67,7 @@ export default {
     },
     methods: {
         handleClick(tab, event) {
-            console.log(tab, event);
+            // console.log(tab, event);
             if (tab.label == "全部") {
                 axios.get('/api/serAd?offset=0&limit=9').then(res => {
                     this.adMsgArr = res.data.rows;
