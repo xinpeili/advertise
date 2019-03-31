@@ -34,8 +34,11 @@
                     </div>
                 </div>
             </router-link>
-            <h3 v-if="textFlag">暂未发布广告</h3>
+            <span v-if="textFlag">暂未发布广告</span>
         </div>
+
+        <!-- footer -->
+        <footer-wrapper class="footer"></footer-wrapper>
     </div>
 </template>
 
@@ -43,6 +46,7 @@
 import carousel3d from './carousel3d';
 import axios from 'axios';
 import { mapState, mapMutations } from 'vuex';
+import footerWrapper from './footer'
 export default {
     data() {
         return {
@@ -140,7 +144,8 @@ export default {
         }
     },
     components: {
-        carousel3d
+        carousel3d,
+        footerWrapper
     }
 }
 </script>
@@ -229,6 +234,19 @@ export default {
                 }
             }
         }
+        span {
+            color: #999;
+            font-size: 20px;
+            padding: 20px 0 40px 0;
+        }
+    }
+    .footer {
+      // position: absolute;
+      // bottom: 0;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+      background-color: #1a1a1a;
     }
 }
 </style>

@@ -1,17 +1,16 @@
 <template>
-    <div>
+    <div class="my_order">
         <div class="user_info">
             用户名：{{this.curUser}}
         </div>
         <el-table
             :data="tableData"
-            style="width: 100%; padding: 40px">
+            style="width: 100%; margin: 40px;">
             <el-table-column
                 type="index"
                 prop="id"
-                label="订单id"
+                label="序号"
                 width="180">
-                    {{ index }}
             </el-table-column>
             <el-table-column
                 prop="userName"
@@ -53,7 +52,32 @@
                 </template>
             </el-table-column>
         </el-table>
+
+        <el-dialog title="查看投放详情" :visible.sync="dialogFormVisible">
+            <el-form :model="curTableData">
+                <el-form-item label="订单id" :label-width="formLabelWidth">
+                    <el-input :disabled="true" v-model="curTableData.id" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="投放者" :label-width="formLabelWidth">
+                    <el-input :disabled="true" v-model="curTableData.user_name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="广告名称" :label-width="formLabelWidth">
+                    <el-input :disabled="true" v-model="curTableData.ad_title" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="投放总时间" :label-width="formLabelWidth">
+                    <el-input :disabled="true" v-model="curTableData.time" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="结束投放时间" :label-width="formLabelWidth">
+                    <el-input :disabled="true" v-model="curTableData.ctime" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button plain type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
+
         <el-pagination
+            class="page"
             background
             layout="prev, pager, next"
             :total="total"
@@ -70,7 +94,10 @@ export default {
     data() {
         return {
             tableData: [],
-            total: 0
+            curTableData: {},
+            total: 0,
+            formLabelWidth: '100px',
+            dialogFormVisible: false
         }
     },
     created() {
@@ -89,18 +116,32 @@ export default {
             })
         },
         handleClick(row) {
-
+            this.curTableData = row;
+            this.dialogFormVisible = true;
         },
         delClick(row) {
 
         },
         pageClick(curPage) {
-
+            var curOffset = 10 * (curPage - 1);
+            this.init(curOffset);
+            window.scrollTo(0, 0);
         }  
     }
 }
 </script>
 
 <style lang="stylus" scoped>
-
+.my_order {
+    padding: 10px;
+    .user_info {
+        font-size: 30px;
+        margin: 20px 0 0 40px;
+        color: #999;
+    }
+    .page {
+        padding: 0 20px 20px 0;
+        text-align: center;
+    }
+}
 </style>

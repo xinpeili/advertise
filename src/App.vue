@@ -23,15 +23,12 @@
       <router-view/>
     </div>
 
-    <!-- footer -->
-    <footer-wrapper class="footer"></footer-wrapper>
   </div>
 </template>
 
 <script>
 
 import login from './components/login'
-import footerWrapper from './components/footer'
 import { mapState, mapMutations } from 'vuex';
 
 export default {
@@ -72,8 +69,7 @@ export default {
     }
   },
   components: {
-    login,
-    footerWrapper
+    login
   }
 }
 </script>
@@ -144,14 +140,6 @@ export default {
     }
     .content-wrapper {
       width: 100%;
-    }
-    .footer {
-      // position: absolute;
-      // bottom: 0;
-      width: 100%;
-      padding: 20px;
-      box-sizing: border-box;
-      background-color: #1a1a1a;
     }
   }
 </style>
