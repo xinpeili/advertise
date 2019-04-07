@@ -50,5 +50,8 @@ app.get("/delateUser", loader.get("/delateUser"));
 // 获取3d轮播图片
 app.get("/serAllPic", loader.get("/serAllPic"));
 
+// 聊天机器人
+app.get("/chat", loader.get("/chat"));
+
 app.listen(globalConfig["port"]);
 console.log(`success listen at port:${globalConfig["port"]}......`);

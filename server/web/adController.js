@@ -1,6 +1,7 @@
 var advertiseDao = require("../dao/advertiseDao");
 var url = require("url");
 var fs = require("fs");
+var req = require("request");
 
 var path = new Map();
 
@@ -172,5 +173,57 @@ function serAllPic(request, response) {
     })
 }
 path.set("/serAllPic", serAllPic);
+
+// 向聊天机器人发送数据并返回前端
+function chat(request, response) {
+    var params = url.parse(request.url, true).query;
+    var data = {
+        "reqType":0,
+        "perception": {
+            "inputText": {
+                "text": params.text
+            }
+        },
+        "userInfo": {
+            "apiKey": "be3e88b9ae0c49b28582416c86a3f9b5",
+            "userId": "123456"
+        }
+    }
+    var contents = JSON.stringify(data);
+    req({
+        url: "http://openapi.tuling123.com/openapi/api/v2",
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: contents
+    }, function (error, resp, body) {
+        if (!error && resp.statusCode == 200) {
+            //把结果返回给我的前端页面
+
+            var head = {
+                "Access-Control-Allow-Origin":"*",
+                "Access-Control-Allow-Methods":"GET",
+                "Access-Control-Allow-Headers": "x-request-with , content-type"
+            };
+            response.writeHead(200, head);
+
+            var obj = JSON.parse(body);
+            if (obj && obj.results && obj.results.length > 0 && obj.results[0].values) {
+                response.write(JSON.stringify(obj.results[0].values));
+                response.end();
+            } else {
+                response.write("{\"text\":\"偶布吉岛你说的是什么~\"}");
+                response.end();
+            }
+        } else {
+            //返回给自己前端页面一个400错误
+            response.writeHead(400);
+            response.write("数据异常");
+            response.end();
+        }
+    });
+}
+path.set("/chat", chat);
 
 module.exports.path = path;

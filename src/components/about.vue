@@ -3,7 +3,8 @@
         <div class="head">聊天机器人</div>
         <div class="content">
             <div v-for="(ele,index) in list" :key="index" style="overflow: hidden; margin-top: 15px;">
-                <img :src="ele.url" alt="" style="float: right; width: 35px; height: 35px; margin-right: 5px;">
+                <img v-if="ele.type == 1" :src="ele.url" alt="" style="float: right; width: 35px; height: 35px; margin-right: 5px;">
+                <img v-if="ele.type == 2" :src="ele.url" alt="" style="float: left; width: 35px; height: 35px; margin-left: 5px;">
                 <span :class="ele.chat">{{ele.val}}</span>
             </div>
         </div>
@@ -20,7 +21,7 @@ export default {
     data() {
         return {
             list: [],
-            val: ''
+            val: '',
         }
     },
     methods: {
@@ -32,26 +33,25 @@ export default {
             if (val == null || val == "") {
                 return;
             }
+            this.creatChat(this.val, 1, '../static/img/panda.jpeg', 'myChat');
+            this.val = '';
+
+            axios.get(`/api/chat?text=${val}`).then((res) => {
+                this.creatChat(res.data.text, 2, '../static/img/shan.jpeg', 'robotChat')
+            })
+        },
+        creatChat(val, type, url, chat) {
             var chatObj = {
                 val: '',
                 type: 1,
                 url: '',
                 chat: ''
             }
-            // this.appendChat(val, 1);
-            chatObj.val = this.val;
-            chatObj.type = 1;
-            chatObj.url = '../assets/images/panda.jpeg';
-            chatObj.chat = 'myChat';
+            chatObj.val = val;
+            chatObj.type = type;
+            chatObj.url = url;
+            chatObj.chat = chat;
             this.list.push(chatObj);
-            this.val = '';
-
-            // axios.get(`/api/chat?text=${val}`).then(() => {
-            //     // this.appendChat(JSON.parse(ajax.responseText).text, 2);
-            //     this.chatObj.type = 2;
-            //     this.chatObj.url = '@/assets/images/shan.jpeg';
-            //     this.chatObj.chat = 'robotChat'
-            // })
         }
     }
 }
@@ -60,7 +60,6 @@ export default {
 <style lang="stylus" scoped>
 #chat {
     width: 450px;
-    height: 100vh;
     position: relative;
     margin-left: auto;
     margin-right: auto;
