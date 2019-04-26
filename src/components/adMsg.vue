@@ -102,6 +102,12 @@ export default {
             return true;
         }
     },
+    // https://blog.csdn.net/buyaopingbixiazai/article/details/80584441
+    // 数据库增加两个字段：isStart、adMsgAdd
+    // 1.后端写一个接口，根据新加的isStart判断刚进入页面时按钮样式，每一个详情页created里都调用
+    // 2.重写startTime和endTime
+    // 3.endTime时清除local
+    // 4.根据新加的isStart判断浏览量变化时，增加数传到后端adMsgAdd
     methods: {
         startTime () {
             this.$message({
@@ -111,6 +117,9 @@ export default {
             this.timer = setInterval(() => {
                 this.time ++;
             }, 1000)
+            // 记录开始计时时的时间戳，并进行存储
+            // let startDate = new Date().getTime();
+            // localStorage.setItem('startTime', startDate);
         },
         async endTime () {
             this.dialogFormVisible = true;
@@ -142,7 +151,18 @@ export default {
                 });
             }
             this.time = 0;
+
+            // 结束时获取当前时间戳，并减去开始的
+            // let endDate = new Date().getTime();
+            // this.form.time = turnFormat( endDate - parseInt(localStorage.getItem('startTime')) );
         },
+        // turnFormat(time) {
+        //     if (time < 60) {
+        //         return time + '秒';
+        //     } else if (time > 60 && time < 3600) {
+        //         return parseInt(time / 60) + '分' + parseInt(time % 60) + '秒';
+        //     }
+        // },
         inTheOrder () {
             this.dialogFormVisible = false;
             if(!this.subFlag) return;
