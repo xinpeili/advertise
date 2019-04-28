@@ -42,6 +42,8 @@ app.get("/serPicMsg", loader.get("/serPicMsg"));
 app.get("/delateMsg", loader.get("/delateMsg"));
 // 修改广告信息
 app.get("/modifyMsg", loader.get("/modifyMsg"));
+// 修改投放状态
+app.get("/changeAdState", loader.get("/changeAdState"));
 
 // 管理员获取所有用户信息
 app.get("/getAllUser", loader.get("/getAllUser"));

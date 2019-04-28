@@ -110,11 +110,11 @@ function updateViews(views, title, success) {
 }
 
 // 提交投放订单
-function order(user_name, ad_title, time, success) {
+function order(user_name, ad_title, time, ad_views, success) {
     var date = new Date();
     var connection = dbutil.createConnection();
-    var serchSql = "insert into my_order (user_name, ad_title, time, ctime) values (?, ?, ?, ?)"
-    var params = [user_name, ad_title, time, date];
+    var serchSql = "insert into my_order (user_name, ad_title, time, ad_views, ctime) values (?, ?, ?, ?, ?)"
+    var params = [user_name, ad_title, time, ad_views, date];
     connection.connect();
     connection.query(serchSql, params, function (err, res) {
         if(err == null) {
@@ -313,6 +313,22 @@ function serAllPic(success) {
     connection.end();
 }
 
+// 修改投放状态
+function changeAdState(id, num, success) {
+    var connection = dbutil.createConnection();
+    var params = [num, id];
+    var updateSql = "update advertise set is_start = ? where ad_id = ?;";
+    connection.connect();
+    connection.query(updateSql, params, function (err, res) {
+        if(err == null) {
+            success()
+        } else {
+            throw new Error(err);
+        }
+    })
+    connection.end();
+}
+
 module.exports = {
     "insertLogin": insertLogin,
     "serchLogin": serchLogin,
@@ -332,7 +348,8 @@ module.exports = {
     "getAllUser": getAllUser,
     "getAllUserCount": getAllUserCount,
     "delateUser": delateUser,
-    "serAllPic": serAllPic
+    "serAllPic": serAllPic,
+    "changeAdState": changeAdState
 }
 
 

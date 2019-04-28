@@ -44,7 +44,7 @@ path.set("/updateViews", updateViews);
 // 提交订单
 function order(request, response) {
     var params = url.parse(request.url, true).query;
-    advertiseDao.order(params.userName, params.adName, params.time, function (res) {
+    advertiseDao.order(params.userName, params.adName, params.time, params.adView, function (res) {
         response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
         response.write(JSON.stringify({ok: 'ok', data: res}));
         response.end();
@@ -173,6 +173,17 @@ function serAllPic(request, response) {
     })
 }
 path.set("/serAllPic", serAllPic);
+
+// 修改投放状态
+function changeAdState(request, response) {
+    var params = url.parse(request.url, true).query;
+    advertiseDao.changeAdState(parseInt(params.ad_id), parseInt(params.num), function () {
+        response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+        response.write("修改成功");
+        response.end();
+    })
+}
+path.set("/changeAdState", changeAdState);
 
 // 向聊天机器人发送数据并返回前端
 function chat(request, response) {
