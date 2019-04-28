@@ -49,6 +49,7 @@
                         alert("登陆成功，欢迎您：" + this.userName);
                         console.log(this.$cookieStore)
                         console.log(this.userName);
+                        console.log(this.$route)
                         this.$cookieStore.setCookie('userName', this.userName, 86400);
                         this.setCurUser(this.userName);
                         this.emitIsFlag();

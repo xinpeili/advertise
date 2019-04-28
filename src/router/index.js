@@ -20,6 +20,9 @@ export default new Router({
     {
       path: '/advertising',
       name: 'Advertising',
+      // meta: {
+      //   login: false
+      // },
       component: Advertising
     },
     {

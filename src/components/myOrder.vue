@@ -43,6 +43,13 @@
                 </template>
             </el-table-column>
             <el-table-column
+                prop="addViews"
+                label="投放状态下增加的浏览数">
+                <template slot-scope="scope">
+                    {{ scope.row.ad_views }}
+                </template>
+            </el-table-column>
+            <el-table-column
                 prop="caozuo"
                 label="操作"
                 width="200">
@@ -69,6 +76,9 @@
                 </el-form-item>
                 <el-form-item label="结束投放时间" :label-width="formLabelWidth">
                     <el-input :disabled="true" v-model="curTableData.ctime" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="投放状态下增加的浏览数" :label-width="formLabelWidth">
+                    <el-input :disabled="true" v-model="curTableData.ad_views" autocomplete="off"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">

@@ -35,11 +35,11 @@
                 <div class="target-text">发布者：{{adArr.user_name}}</div>
             </div>
             <div class="timing" v-if="isShow">
-                <el-button type="primary" :disabled="!flag" @click="startTime">立即投放</el-button>
-                <div class="time_box">
+                <button :class="{active: !btnActive}" type="primary" @click="startTime">立即投放</button>
+                <!-- <div class="time_box">
                     <el-input v-model="time" :disabled="true"></el-input>
-                </div>
-                <el-button type="primary" :disabled="flag" @click="endTime">停止计时</el-button>
+                </div> -->
+                <button :class="{active: btnActive}" @click="endTime">停止计时</button>
             </div>
         </div>
         <el-dialog title="投放报告" :visible.sync="dialogFormVisible">
@@ -63,10 +63,34 @@
 import { mapState, mapMutations } from 'vuex';
 import axios from 'axios';
 export default {
+    created() {
+        var curStartTime = localStorage.getItem('startTime' + this.id);
+        var curViews = localStorage.getItem('views' + this.id);
+        // 存addViews
+        if (!localStorage.getItem('addViews' + this.id)) {
+            localStorage.setItem('addViews' + this.id, 0);
+        }
+        // 存views
+        if (curViews) {
+            // 如果正在投放并且addViews增加了，说明被浏览了
+            if ( curStartTime && (this.adArr.views - curViews > 0) ) {
+                localStorage.setItem('addViews' + this.id, this.adArr.views - curViews);
+            }
+        } else {
+            localStorage.setItem('views' + this.id, this.adArr.views)
+        }
+        
+        if (this.adArr.is_start) {
+            this.btnActive = true;
+        } else {
+            this.btnActive = false;
+        }
+    },
     data() {
         return {
-            time: 0,
-            timer: null,
+            // addViews: 0,  // 记录增加的广告浏览量
+            id: this.$route.params.id,
+            btnActive: true,  // 按钮被选中的状态
             dialogTableVisible: false,
             dialogFormVisible: false,
             form: {
@@ -94,12 +118,6 @@ export default {
         },
         targetArr () {
             return this.adArr.target.split("；");
-        },
-        flag () {
-            if(this.time !== 0) {
-                return false;
-            }
-            return true;
         }
     },
     // https://blog.csdn.net/buyaopingbixiazai/article/details/80584441
@@ -114,25 +132,39 @@ export default {
                 message: '投放成功',
                 type: 'success'
             });
-            this.timer = setInterval(() => {
-                this.time ++;
-            }, 1000)
+            // 改变按钮状态
+            this.btnActive = 1;
             // 记录开始计时时的时间戳，并进行存储
-            // let startDate = new Date().getTime();
-            // localStorage.setItem('startTime', startDate);
+            let startDate = new Date().getTime();
+            localStorage.setItem('startTime' + this.id, startDate);
+            // 修改状态
+            this.changeState();
+        },
+        changeState() {
+            axios.get(`/api/changeAdState?ad_id=${this.adArr.ad_id}&num=${this.btnActive}`)
+                .catch(() => {
+                    this.$message({
+                        message: '修改失败',
+                        type: 'error'
+                    });
+                }) 
         },
         async endTime () {
-            this.dialogFormVisible = true;
-            clearInterval(this.timer);
-            this.form.name = this.adArr.title;
-            if (this.time < 60) {
-                this.form.time = this.time + '秒';
-            } else if (this.time > 60 && this.time < 3600) {
-                this.form.time = parseInt(this.time / 60) + '分' + parseInt(this.time % 60) + '秒';
+            if (!localStorage.getItem('startTime' + this.id)) {
+                return;
             }
+            // 改变按钮状态
+            this.btnActive = 0;
+            this.dialogFormVisible = true;
+            this.form.name = this.adArr.title;
+            // 结束时获取当前时间戳，并减去开始的
+            let endDate = new Date().getTime();
+            this.form.time = this.turnFormat( endDate - parseInt(localStorage.getItem('startTime' + this.id)) );
+            console.log(this.form.time)
+            console.log(localStorage.getItem('addViews' + this.id))
             try {
                 this.subFlag = true;
-                const data = await axios.get(`/api/order?userName=${this.curUser}&adName=${this.form.name}&time=${this.form.time}`)
+                const data = await axios.get(`/api/order?userName=${this.curUser}&adName=${this.form.name}&time=${this.form.time}&adView=${localStorage.getItem('addViews' + this.id)}`)
                 console.log(data)
                 if (data.statusText != 'OK') {
                     this.$message({
@@ -150,19 +182,20 @@ export default {
                     type: 'error'
                 });
             }
-            this.time = 0;
-
-            // 结束时获取当前时间戳，并减去开始的
-            // let endDate = new Date().getTime();
-            // this.form.time = turnFormat( endDate - parseInt(localStorage.getItem('startTime')) );
+            localStorage.removeItem('startTime' + this.id);
+            localStorage.removeItem('views' + this.id);
+            localStorage.removeItem('addViews' + this.id);
+            this.changeState();
         },
-        // turnFormat(time) {
-        //     if (time < 60) {
-        //         return time + '秒';
-        //     } else if (time > 60 && time < 3600) {
-        //         return parseInt(time / 60) + '分' + parseInt(time % 60) + '秒';
-        //     }
-        // },
+        turnFormat(time) {
+            // 转化为秒
+            var sec = time / 1000;
+            if (sec < 60) {
+                return sec + '秒';
+            } else if (sec > 60 && sec < 3600) {
+                return parseInt(sec / 60) + '分' + parseInt(sec % 60) + '秒';
+            }
+        },
         inTheOrder () {
             this.dialogFormVisible = false;
             if(!this.subFlag) return;
@@ -287,10 +320,27 @@ export default {
         }
         .timing {
             width: 100%;
-            .time_box {
-                display: inline-block;
-                width: 100px;
+            button {
+                width: 140px;
+                height: 40px;
+                color: #ffffff;
+                line-height: 40px;
+                border-radius: 2px;
+                transition: all ease 0.1s;
+                cursor: pointer;
+                background: #409EFF;
+                border: 1px solid #409EFF;
+                font-size: 18px;
+                &.active {
+                    border: 1px dashed #b8bcc4;
+                    color: #9098a8;
+                    background: #ffffff;
+                    &:hover {
+                        border: 1px solid #409EFF;
+                    }
+                }
             }
+            
         }
     }
 }

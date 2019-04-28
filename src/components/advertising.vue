@@ -48,6 +48,19 @@ import axios from 'axios';
 import { mapState, mapMutations } from 'vuex';
 import footerWrapper from './footer'
 export default {
+    // beforeRouteEnter (to, from, next) {
+        // if (this.curUser) {
+        //     next();
+        // } else {
+        //     this.$message({
+        //         showClose: true,
+        //         message: '请先登录',
+        //         type: 'error'
+        //     });
+        //     next(false);
+        // }
+        // console.log(to, from)
+    // },
     data() {
         return {
             activeName: 'first',
